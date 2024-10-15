@@ -1,6 +1,6 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.types import LargeBinary
 
 Base = declarative_base()
@@ -18,6 +18,8 @@ class CrawlResult(Base):
     size = Column(Integer)
     content = Column(LargeBinary)
     decompressed_content = Column(String)
+    decompressed_content_filled = Column(Boolean)
+    shattered = Column(Boolean)
 
     def __repr__(self):
         return url

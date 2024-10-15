@@ -1,7 +1,5 @@
-
 from urllib.parse import urlparse
 from w3lib.http import headers_dict_to_raw, headers_raw_to_dict
-
 
 import scrapy
 
@@ -19,7 +17,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
 
 Base = declarative_base()
-engine = create_engine("mysql+pymysql://scrapy:12345@localhost/crawl?charset=utf8mb4")
+engine = create_engine("mysql+pymysql://scrapy:12345@localhost/crawler?charset=utf8mb4")
 
 class CrawlResult(Base):
     __tablename__ = 'crawl_result'
@@ -79,13 +77,12 @@ class MySqlCacheStorage(FilesystemCacheStorage):
 class QuotesSpider(scrapy.Spider):
     name = "quotes"
 
-    def __init__(self):
-        self.link_extractor = LinkExtractor(allow_domains='www.bbc.com')
+    def __init__(self, domains, start_pages):
+        self.link_extractor = LinkExtractor(allow_domains=domains)
+        self.start_pages = start_pages
 
     def start_requests(self):
-        urls = [
-                'http://www.bbc.com/'
-        ]
+        urls = self.start_pages
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse, meta={'playwright': True})
 
