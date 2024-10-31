@@ -1,6 +1,9 @@
 from urllib.parse import urlparse
 from w3lib.http import headers_dict_to_raw, headers_raw_to_dict
 
+import gzip
+import io
+
 import scrapy
 
 from scrapy.linkextractors import LinkExtractor
@@ -31,6 +34,7 @@ class CrawlResult(Base):
     content_encoding = Column(String)
     size = Column(Integer)
     content = Column(LargeBinary)
+    decompressed_content = Column(String)
 
     def __repr__(self):
         return url
@@ -56,6 +60,19 @@ class MySqlCacheStorage(FilesystemCacheStorage):
         headers = str(headers_dict_to_raw(response.headers), encoding='utf8')
         r.headers = headers
         r.content = response.body
+
+        if r.content_encoding == 'gzip':
+            buf = io.BytesIO(r.content)
+            with gzip.GzipFile(fileobj=buf) as gz:
+                decompressed_bytes = gz.read()
+            encodings = ['utf-8', 'ascii', 'latin-1']
+            for encoding in encodings:
+                try:
+                    r.decompressed_content = decompressed_bytes.decode(encoding)
+                    break
+                except UnicodeDecodeError as e:
+                    pass
+
         session = self.Session()
         session.add(r)
         session.commit()

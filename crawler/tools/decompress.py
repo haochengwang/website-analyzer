@@ -12,6 +12,7 @@ def main():
         Session = sessionmaker(bind=engine)
         session = Session()
         crawl_result = session.query(CrawlResult).filter(
+            CrawlResult.domain == 'blog.samaltman.com',
             CrawlResult.decompressed_content_filled == True,
             CrawlResult.content_encoding == 'gzip',
         ).first()

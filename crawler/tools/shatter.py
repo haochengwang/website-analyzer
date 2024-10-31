@@ -16,9 +16,9 @@ import gc
 engine = create_engine("mysql+pymysql://scrapy:12345@localhost/crawler?charset=utf8mb4")
 
 STOP_TAGS = set(['head', 'script', 'noscript'])
-FLATTEN_TAG = set(['br', 'p', 'ul', 'li', 'span', 'em', 'strong', 'a', 'h1', 'h2', 'h3', 'h4', 'h5'])
+FLATTEN_TAG = set(['br', 'p', 'b', 'i', 'u', 'font', 'ul', 'ol', 'li', 'span', 'em', 'strong', 'a', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5'])
 
-DOMAIN = 'www.theguardian.com'
+DOMAIN = 'a16z.com'
 
 class StringBuilder:
     data = None
